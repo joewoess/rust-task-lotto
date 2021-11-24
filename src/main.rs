@@ -1,6 +1,6 @@
 use std::env;
 
-use rand::{prelude::IteratorRandom, thread_rng};
+use rand::{prelude::IteratorRandom, thread_rng, Rng};
 
 struct Lotto {
     take: usize,
@@ -10,22 +10,49 @@ struct Lotto {
 
 impl Lotto {
     fn new(take: usize, from: usize) -> Self {
-        todo!("Implement")
+        let mut rng = thread_rng();
+        Self {
+            take,
+            from,
+            numbers: (0..take).map(|_| rng.gen_range(1..=from)).collect(), //numbers: Vec::<usize>::new(),
+        }
     }
 
     fn get_numbers(self) -> Vec<usize> {
-        todo!("Implement")
+        self.numbers
     }
 }
 
 fn format_lotto_results(lotto: &Lotto) -> String {
-    // Tip: Use the format macro
-    todo!("Implement")
+    format!(
+        "{take} of {from}: {:?}",
+        numbers = lotto.numbers,
+        take = lotto.take,
+        from = lotto.from
+    )
 }
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    todo!("Implement CLI")
+
+    let lotto_numbers: Vec<Lotto> = if args.len() >= 3 && (args.len() - 1) % 2 == 0 {
+        args[1..]
+            .chunks(2)
+            .map(|x| {
+                Lotto::new(
+                    x[0].parse().expect("Argument was not a number"),
+                    x[1].parse().expect("Argument was not a number"),
+                )
+            })
+            .collect()
+    } else {
+        println!("Entered an invalid number of args");
+        Vec::new()
+    };
+
+    for draw in lotto_numbers {
+        println!("{}", format_lotto_results(&draw));
+    }
 }
 
 #[test]
