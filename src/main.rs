@@ -1,6 +1,6 @@
 use std::env;
 
-use rand::{prelude::IteratorRandom, thread_rng, Rng};
+use rand::{thread_rng, Rng};
 
 struct Lotto {
     take: usize,
@@ -14,10 +14,12 @@ impl Lotto {
         Self {
             take,
             from,
-            numbers: (0..take).map(|_| rng.gen_range(1..=from)).collect(), //numbers: Vec::<usize>::new(),
+            numbers: (0..take).map(|_| rng.gen_range(1..=from)).collect(),
         }
     }
-
+    // compiler warns, since he doesn't check the test cases for usages
+    // left the usages in there since you shouldn't edit test cases usually
+    #[allow(dead_code)]
     fn get_numbers(self) -> Vec<usize> {
         self.numbers
     }
@@ -35,6 +37,8 @@ fn format_lotto_results(lotto: &Lotto) -> String {
 fn main() {
     let args: Vec<String> = env::args().collect();
 
+    // check for correct number of arguments.
+    // first arg is program name, after that there should be pairs of {take, from}
     let lotto_numbers: Vec<Lotto> = if args.len() >= 3 && (args.len() - 1) % 2 == 0 {
         args[1..]
             .chunks(2)
