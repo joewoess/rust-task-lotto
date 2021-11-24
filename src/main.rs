@@ -1,6 +1,6 @@
 use std::env;
 
-use rand::{thread_rng, Rng};
+use rand::{prelude::IteratorRandom, thread_rng};
 
 struct Lotto {
     take: usize,
@@ -14,7 +14,7 @@ impl Lotto {
         Self {
             take,
             from,
-            numbers: (0..take).map(|_| rng.gen_range(1..=from)).collect(),
+            numbers: (1..from).choose_multiple(&mut rng, take),
         }
     }
     // compiler warns, since he doesn't check the test cases for usages
